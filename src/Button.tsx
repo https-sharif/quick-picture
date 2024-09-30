@@ -19,6 +19,7 @@ const Button: React.FC<Props> = ({
   const toggleDropdown = (
     event: React.MouseEvent<HTMLSpanElement, MouseEvent>
   ) => {
+    if(loading) return
     event.stopPropagation();
     setDropdownOpen(!isDropdownOpen);
   };
