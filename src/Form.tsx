@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
-import './Form.css';
+import './index.css';
 
 type Props = {
     prompt : string,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Button.css";
+import "./index.css";
 
 type Props = {
   onClick: () => void;
