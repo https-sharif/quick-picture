@@ -40,12 +40,18 @@ type PhotoResult = {
     };
   };
   user: UserType;
+  links: {
+    download: string;
+  };
 };
 
 type UnsplashResponse =
   | {
-      results?: PhotoResult[];
-      user?: UserType;
+      results: PhotoResult[];
+      user: UserType;
+      links: {
+        download: string;
+      };
     }
   | PhotoResult[];
 
@@ -53,7 +59,9 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [images, setImages] = useState<{ url: string }[]>([]);
+  const [images, setImages] = useState<
+    { url: string; download: string; name: string }[]
+  >([]);
   const [queryType, setQueryType] = useState<string>("");
   const [user, setUser] = useState<UserType>(null);
   const [haveImages, setHaveImages] = useState<boolean>(true);
@@ -109,30 +117,20 @@ const App: React.FC = () => {
   };
 
   const formatResult = (response: UnsplashResponse) => {
-    switch (queryType) {
-      case "random":
-        setUser(null);
-        if (Array.isArray(response)) {
-          return response.map((item) => ({ url: item.urls.regular }));
-        }
-        break;
-      case "user":
-        if (Array.isArray(response)) {
-          return response.map((item) => ({ url: item.urls.regular }));
-        }
-        break;
-      case "":
-        setUser(null);
-        if (Array.isArray(response)) {
-          return response.map((item) => ({ url: item.urls.regular }));
-        } else if (response.results) {
-          return response.results.map((item) => ({ url: item.urls.regular }));
-        } else {
-          throw new Error("Unexpected response format");
-        }
-        break;
-      default:
-        return [];
+    if (Array.isArray(response)) {
+      return response.map((item) => ({
+        url: item.urls.regular,
+        download: item.links.download,
+        name: item.user ? item.user.name : "Unknown",
+      }));
+    } else if (response.results) {
+        return response.results.map((item) => ({
+            url: item.urls.regular,
+            download: item.links.download,
+            name: item.user ? item.user.name : "Unknown",
+          }));
+    } else {
+      throw new Error("Unexpected response format");
     }
   };
 
@@ -150,7 +148,11 @@ const App: React.FC = () => {
       const requestUrl = selectUrl();
 
       const response = await fetch(requestUrl).then((res) => res.json());
-      const result = formatResult(response) as { url: string }[];
+      const result = formatResult(response) as {
+        url: string;
+        download: string;
+        name: string;
+      }[];
 
       console.log("Result:", result);
       setHaveImages(result.length > 0);
@@ -164,19 +166,23 @@ const App: React.FC = () => {
           error instanceof Error ? error.message : String(error)
         }`
       );
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getMoreImages = async () => {
     setPrompt(previousPrompt);
-    setPages(p => p + 1);
+    setPages((p) => p + 1);
     setLoading(true);
     try {
       const requestUrl = selectUrl() + "&page=" + pages + 1;
       const response = await fetch(requestUrl).then((res) => res.json());
-      const result = formatResult(response) as { url: string }[];
+      console.log("Response:", response);
+      const result = formatResult(response) as {
+        url: string;
+        download: string;
+        name: string;
+      }[];
 
       console.log("Result:", result);
 
@@ -191,40 +197,47 @@ const App: React.FC = () => {
           error instanceof Error ? error.message : String(error)
         }`
       );
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
-  const preloadImages = (imageArray: { url: string }[]) => {
-    return new Promise<{ url: string }[]>((resolve, reject) => {
-      const loadedImages: { url: string }[] = [];
-      let loadedCount = 0;
-
-      imageArray.forEach((imageData, index) => {
-        const img = new Image();
-        img.src = imageData.url;
-
-        img.onload = () => {
-          loadedImages[index] = imageData;
-          loadedCount++;
-
-          if (loadedCount === imageArray.length) {
+  const preloadImages = (
+    imageArray: { url: string; download: string; name: string }[]
+  ) => {
+    return new Promise<{ url: string; download: string; name: string }[]>(
+      (resolve, reject) => {
+        const loadedImages: { url: string; download: string; name: string }[] =
+          [];
+        let loadedCount = 0;
+        if (loadedCount === imageArray.length) {
             resolve(loadedImages);
           }
-        };
 
-        img.onerror = (err) => {
-          reject(`Image failed to load: ${err}`);
-        };
-      });
-    });
+        imageArray.forEach((imageData, index) => {
+          const img = new Image();
+          img.src = imageData.url;
+
+          img.onload = () => {
+            loadedImages[index] = imageData;
+            loadedCount++;
+
+            if (loadedCount === imageArray.length) {
+              resolve(loadedImages);
+            }
+          };
+
+          img.onerror = (err) => {
+            reject(`Image failed to load: ${err}`);
+          };
+        });
+      }
+    );
   };
 
   const handleClick = () => {
-    if (prompt.trim() === "") {
+    if (prompt.trim() === "" && queryType !== "random") {
       setError("Error! Prompt cannot be empty!");
-    } else if (prompt.length > 100) {
+    } else if (prompt.length > 100 && queryType !== "random") {
       setError("Prompt input cannot exceed 100 characters.");
     } else {
       handleFetchImages();
@@ -256,7 +269,7 @@ const App: React.FC = () => {
         setQueryType={setQueryType}
       />
 
-      {user !== null && (
+      {user !== null && queryType === "user" && (
         <User
           name={user.name}
           username={user.username}
