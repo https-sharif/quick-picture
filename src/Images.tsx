@@ -8,7 +8,7 @@ type Props = {
 
 const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
   return (
-    <div className="select-none mt-20 w-11/12 columns-2 md:columns-3 lg:columns-4 xl:columns-4 gap-2 mb-20 no-scrollbar">
+    <div className="select-none mt-20 w-11/12 columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-2 mb-20 no-scrollbar">
       {!haveImages && <p>No images found</p>}
       {images.map((image: { url: string }, index: number) => (
         <img

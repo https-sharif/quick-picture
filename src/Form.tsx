@@ -30,7 +30,7 @@ const Form : React.FC<Props> = ({ prompt, onInputChange, loading, handleClick, h
 
     return (
         <>
-            <div>
+            <div className="mb-16">
                 <form className="flex items-center flex-col justify-center relative">
                     <textarea 
                         id="prompt" 
@@ -43,7 +43,7 @@ const Form : React.FC<Props> = ({ prompt, onInputChange, loading, handleClick, h
                             autoResizeTextarea(e.target);
                         }}
                         onKeyDown={handleKeyPress}
-                        className="w-96 h-20 mt-20 border-2 placeholder:text-[#84D2F6] mb-10 text-[#133C55] bg-[#91E5F6] rounded-lg border-[#386FA4] outline-none focus:border-[#133C55] resize-none text-center text-2xl p-2 transition-colors duration-500"
+                        className="w-96 h-20 disabled:opacity-80 mt-20 border-2 placeholder:text-[#84D2F6] mb-10 text-[#133C55] bg-[#91E5F6] rounded-lg border-[#386FA4] outline-none focus:border-[#133C55] resize-none text-center text-2xl p-2 transition-colors duration-500"
                     />
                     <p className="font-bold text-white absolute bottom-12 right-1">{prompt.length}/100</p>
 
@@ -52,7 +52,7 @@ const Form : React.FC<Props> = ({ prompt, onInputChange, loading, handleClick, h
                             queryType={queryType}
                             setQueryType={setQueryType} />
 
-                    {error && <p className="text-red-500 font-bold absolute -bottom-10">{error}</p>}
+                    {error && <p className="h-16 text-red-600 font-bold absolute -bottom-20">{error}</p>}
                 </form>
             </div>
         </>
