@@ -8,17 +8,10 @@ type Props = {
   setQueryType: (queryType: string) => void;
 };
 
-const Button: React.FC<Props> = ({
-  onClick,
-  loading,
-  queryType,
-  setQueryType,
-}) => {
+const Button: React.FC<Props> = ({ onClick, loading, queryType, setQueryType }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = (
-    event: React.MouseEvent<HTMLSpanElement, MouseEvent>
-  ) => {
+  const toggleDropdown = ( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) => {
     if (loading) return;
     event.stopPropagation();
     setDropdownOpen(!isDropdownOpen);
@@ -49,25 +42,34 @@ const Button: React.FC<Props> = ({
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  });
+  },[]);
 
   const buttonName: string = queryName();
 
   return (
     <div className="relative inline-block">
-      <div className="h-10 m-w-200 items-center flex justify-center rounded-2xl select-none min-w-200 text-white font-bold hover:shadow-md hover:shadow-[#3b7ab8] transition-shadow duration-500">
+      <div className="h-10 m-w-200 items-center flex justify-center rounded-2xl select-none min-w-200 text-white font-bold hover:shadow-md hover:shadow-[#3b7ab8] transition-shadow duration-500 cursor-pointer">
         <button
-          className="h-10 w-10/12 bg-[#386FA4] rounded-l-2xl active:bg-[#2b5680] disabled:opacity-50"
+          className="h-10 w-10/12 bg-[#386FA4] rounded-l-2xl active:bg-[#2b5680] disabled:opacity-50 border-l-2 border-solid border-y-2 border-[#133C55]"
           type="button"
           disabled={loading}
           onClick={onClick}
         >
-          {loading ? "Loading..." : buttonName}
+          {loading ? (
+            <div className="flex justify-center items-center space-x-1">
+              <span className="sr-only">Loading...</span>
+              <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
+            </div>
+          ) : (
+            buttonName
+          )}
         </button>
         <span
           className={`${
             loading && "opacity-50"
-          } flex h-10 items-center justify-center rounded-r-2xl active:bg-[#2b5680] right-0 bg-[#386FA4] w-2/12`}
+          } flex h-10 items-center justify-center rounded-r-2xl active:bg-[#2b5680] right-0 bg-[#386FA4] w-2/12 border-r-2 border-y-2 border-solid border-[#133C55]`}
           onClick={toggleDropdown}
           onKeyDown={(event) => {
             if (event.key === "Enter") {

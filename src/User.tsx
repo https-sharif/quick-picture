@@ -23,15 +23,8 @@ interface UserProps {
   twitter_username: string;
 }
 
-const User: React.FC<UserProps> = ({
-  name,
-  username,
-  bio,
-  profile_image,
-  instagram_username,
-  links,
-  twitter_username,
-}) => {
+const User: React.FC<UserProps> = ({ name, username, bio, profile_image, instagram_username, links, twitter_username }) => {
+  
   return (
     <div className="flex items-center justify-around min-w-full mt-16">
       <div className="flex justify-between w-3/4">
@@ -52,6 +45,7 @@ const User: React.FC<UserProps> = ({
                   height="32px"
                   viewBox="0 0 24 24"
                   fill="none"
+                  className="hover:scale-110 transition-transform duration-500"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -94,6 +88,7 @@ const User: React.FC<UserProps> = ({
                   y="32px"
                   width="32"
                   height="32"
+                  className="hover:scale-110 transition-transform duration-500"
                   viewBox="0 0 30 30"
                 >
                   <path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z"></path>
@@ -106,6 +101,7 @@ const User: React.FC<UserProps> = ({
                 fill="#000000"
                 width="32px"
                 height="32px"
+                className="hover:scale-110 transition-transform duration-500"
                 viewBox="0 0 32.00 32.00"
                 xmlns="http://www.w3.org/2000/svg"
                 stroke="#000000"

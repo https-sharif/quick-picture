@@ -29,20 +29,20 @@ type Props = {
     download: string;
     user: UserType;
   }[];
-  haveImages: boolean;
 };
 
-const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
-  const handleImageClick = ({
-    url,
-    download,
-    user,
-  }: {
-    url: { raw: string; regular: string };
-    download: string;
-    user: UserType;
-  }) => {
+type UserProps = {
+  url: { raw: string; regular: string };
+  download: string;
+  user: UserType;
+};
+
+const ImageCanvas: React.FC<Props> = ({ images }) => {
+  
+  const handleImageClick = ({ url, download, user } : UserProps ) => {
+
     document.body.style.overflow = "hidden";
+
     // Create overlay
     const overlay = document.createElement("div");
     overlay.style.cssText = `
@@ -75,7 +75,7 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
 
     // Create image element
     const image = document.createElement("img");
-    // Preload the image
+
     // Create loading spinner
     const loadingSpinner = document.createElement("div");
     loadingSpinner.className =
@@ -214,11 +214,6 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
 
   return (
     <div className="select-none mt-20 w-11/12 mb-20 ">
-      {!haveImages && (
-        <div className="font-bold text-white text-2xl w-full text-center">
-          No images found
-        </div>
-      )}
       <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-2 ">
         {images.map(
           (
@@ -233,7 +228,7 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
               key={index}
               tabIndex={index + 1}
               src={image.url.regular}
-              className="rounded-md hover:scale-105 hover:shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] w-96 h-auto object-contain mb-2 hover:z-10 transition-all duration-500"
+              className="rounded-md hover:scale-105 border-2 border-solid border-black hover:shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] w-96 h-auto object-contain mb-2 hover:z-10 transition-all duration-500"
               alt={`Image ${index + 1}`}
               onClick={() => handleImageClick(image)}
               draggable={false}

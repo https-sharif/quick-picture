@@ -82,7 +82,7 @@ const Form: React.FC<Props> = ({
           />
 
           {error && (
-            <p className="h-16 text-red-600 font-bold absolute -bottom-20">
+            <p className="h-16 text-red-500 font-bold absolute -bottom-20">
               {error}
             </p>
           )}
