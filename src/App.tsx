@@ -28,6 +28,7 @@ type UserType = {
 
 type PhotoResult = {
   urls: {
+    raw: string;
     regular: string;
   };
   location?: {
@@ -60,7 +61,7 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<
-    { url: string; download: string; name: string }[]
+    { url: {raw: string, regular: string}; download: string; user: UserType }[]
   >([]);
   const [queryType, setQueryType] = useState<string>("");
   const [user, setUser] = useState<UserType>(null);
@@ -119,15 +120,15 @@ const App: React.FC = () => {
   const formatResult = (response: UnsplashResponse) => {
     if (Array.isArray(response)) {
       return response.map((item) => ({
-        url: item.urls.regular,
+        url: {raw: item.urls.regular, regular: item.urls.regular},
         download: item.links.download,
         name: item.user ? item.user.name : "Unknown",
       }));
     } else if (response.results) {
         return response.results.map((item) => ({
-            url: item.urls.regular,
+            url: {raw: item.urls.raw , regular: item.urls.regular},
             download: item.links.download,
-            name: item.user ? item.user.name : "Unknown",
+            user: item.user,
           }));
     } else {
       throw new Error("Unexpected response format");
@@ -149,9 +150,9 @@ const App: React.FC = () => {
 
       const response = await fetch(requestUrl).then((res) => res.json());
       const result = formatResult(response) as {
-        url: string;
+        url: {raw: string, regular: string};
         download: string;
-        name: string;
+        user: UserType;
       }[];
 
       console.log("Result:", result);
@@ -179,9 +180,9 @@ const App: React.FC = () => {
       const response = await fetch(requestUrl).then((res) => res.json());
       console.log("Response:", response);
       const result = formatResult(response) as {
-        url: string;
+        url: {raw: string, regular: string};
         download: string;
-        name: string;
+        user: UserType;
       }[];
 
       console.log("Result:", result);
@@ -202,11 +203,11 @@ const App: React.FC = () => {
   };
 
   const preloadImages = (
-    imageArray: { url: string; download: string; name: string }[]
+    imageArray: { url: {raw: string, regular: string}; download: string; user: UserType }[]
   ) => {
-    return new Promise<{ url: string; download: string; name: string }[]>(
+    return new Promise<{ url: {raw: string, regular: string}; download: string; user: UserType }[]>(
       (resolve, reject) => {
-        const loadedImages: { url: string; download: string; name: string }[] =
+        const loadedImages: { url: {raw: string, regular: string}; download: string; user: UserType }[] =
           [];
         let loadedCount = 0;
         if (loadedCount === imageArray.length) {
@@ -215,7 +216,7 @@ const App: React.FC = () => {
 
         imageArray.forEach((imageData, index) => {
           const img = new Image();
-          img.src = imageData.url;
+          img.src = imageData.url.regular;
 
           img.onload = () => {
             loadedImages[index] = imageData;
