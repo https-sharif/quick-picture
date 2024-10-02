@@ -70,7 +70,7 @@ const App: React.FC = () => {
   const [queryType, setQueryType] = useState<string>("");
   const [user, setUser] = useState<UserType>(null);
   const [haveImages, setHaveImages] = useState<boolean>(true);
-  const [pages, setPages] = useState<number>(1);
+  const [pages, setPages] = useState<number>(2);
   const [previousPrompt, setPreviousPrompt] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -78,7 +78,12 @@ const App: React.FC = () => {
     setError(null);
     setPrompt("");
     setUser(null);
+    setMessage(null);
   }, [queryType]);
+
+  useEffect(() => {
+    setMessage(null);
+  }, [prompt]);
 
   const selectUrl = () => {
     const API_URL = import.meta.env.VITE_UNSPLASH_API_URL;
@@ -148,7 +153,7 @@ const App: React.FC = () => {
       setImages([]);
       setPreviousPrompt(prompt);
     }
-    setPages(1);
+    setPages(2);
     setUser(null);
     setError(null);
     setLoading(true);
@@ -182,10 +187,12 @@ const App: React.FC = () => {
 
   const getMoreImages = async () => {
     setPrompt(previousPrompt);
-    setPages((p) => p + 1);
     setLoading(true);
     try {
-      const requestUrl = selectUrl() + "&page=" + pages + 1;
+      const requestUrl = selectUrl() + "&page=" + pages;
+      setPages(pages + 1);
+      console.log("Request URL:", requestUrl);
+
       const response = await fetch(requestUrl).then((res) => res.json());
       console.log("Response:", response);
       const result = formatResult(response) as {

@@ -49,7 +49,7 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(5px);
       z-index: 999;
       display: flex;
@@ -65,7 +65,7 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
       max-height: 70vh;
       min-width: 300px;
       min-height: 300px;
-      background-color: 	hsl(203, 63%, 20%)
+      background-color: transparent;
       overflow: hidden;
       border-radius: 10px;
       display: flex;
@@ -79,12 +79,12 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
     // Create loading spinner
     const loadingSpinner = document.createElement("div");
     loadingSpinner.className =
-      "flex space-x-2 justify-center items-center bg-white dark:invert";
+      "flex space-x-2 justify-center items-center bg-transparent";
     loadingSpinner.innerHTML = `
       <span class='sr-only'>Loading...</span>
-      <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]'></div>
-      <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]'></div>
-      <div class='h-8 w-8 bg-black rounded-full animate-bounce'></div>
+      <div class='h-8 w-8 bg-white rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+      <div class='h-8 w-8 bg-white rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+      <div class='h-8 w-8 bg-white rounded-full animate-bounce'></div>
     `;
 
     // Create download button
@@ -236,6 +236,7 @@ const ImageCanvas: React.FC<Props> = ({ images, haveImages }) => {
               className="rounded-md hover:scale-105 hover:shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] w-96 h-auto object-contain mb-2 hover:z-10 transition-all duration-500"
               alt={`Image ${index + 1}`}
               onClick={() => handleImageClick(image)}
+              draggable={false}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
