@@ -19,7 +19,7 @@ const Button: React.FC<Props> = ({
   const toggleDropdown = (
     event: React.MouseEvent<HTMLSpanElement, MouseEvent>
   ) => {
-    if(loading) return
+    if (loading) return;
     event.stopPropagation();
     setDropdownOpen(!isDropdownOpen);
   };
@@ -65,10 +65,21 @@ const Button: React.FC<Props> = ({
           {loading ? "Loading..." : buttonName}
         </button>
         <span
-          className={`${loading && 'opacity-50'} flex h-10 items-center justify-center rounded-r-2xl active:bg-[#2b5680] right-0 bg-[#386FA4] w-2/12`}
+          className={`${
+            loading && "opacity-50"
+          } flex h-10 items-center justify-center rounded-r-2xl active:bg-[#2b5680] right-0 bg-[#386FA4] w-2/12`}
           onClick={toggleDropdown}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              toggleDropdown(
+                event as unknown as React.MouseEvent<
+                  HTMLSpanElement,
+                  MouseEvent
+                >
+              );
+            }
+          }}
           tabIndex={0}
-
         >
           ▼
         </span>
@@ -77,7 +88,7 @@ const Button: React.FC<Props> = ({
       {isDropdownOpen && (
         <div className="border-2 border-[#386FA4] rounded-2xl absolute z-[1] bg-[#91E5F6] -right-16 text-[#386FA4] select-none font-bold mt-2">
           <div
-            className="p-3 cursor-pointer"
+            className="p-3 cursor-pointer hover:bg-[#386FA4] hover:text-white rounded-t-xl"
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("");
@@ -87,7 +98,7 @@ const Button: React.FC<Props> = ({
             Search
           </div>
           <div
-            className="p-3 cursor-pointer"
+            className="p-3 cursor-pointer hover:bg-[#386FA4] hover:text-white"
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("random");
@@ -97,7 +108,7 @@ const Button: React.FC<Props> = ({
             Random Images
           </div>
           <div
-            className="p-3 cursor-pointer"
+            className="p-3 cursor-pointer hover:bg-[#386FA4] hover:text-white rounded-b-xl"
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("user");

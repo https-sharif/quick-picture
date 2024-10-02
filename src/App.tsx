@@ -61,16 +61,23 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<
-    { url: {raw: string, regular: string}; download: string; user: UserType }[]
+    {
+      url: { raw: string; regular: string };
+      download: string;
+      user: UserType;
+    }[]
   >([]);
   const [queryType, setQueryType] = useState<string>("");
   const [user, setUser] = useState<UserType>(null);
   const [haveImages, setHaveImages] = useState<boolean>(true);
   const [pages, setPages] = useState<number>(1);
   const [previousPrompt, setPreviousPrompt] = useState<string>("");
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setError(null);
+    setPrompt("");
+    setUser(null);
   }, [queryType]);
 
   const selectUrl = () => {
@@ -95,6 +102,7 @@ const App: React.FC = () => {
   };
 
   const fetchUser = (response: UnsplashResponse) => {
+    if (queryType !== "user") return;
     try {
       console.log("User:", response);
       if (Array.isArray(response) && response.length > 0) {
@@ -120,16 +128,16 @@ const App: React.FC = () => {
   const formatResult = (response: UnsplashResponse) => {
     if (Array.isArray(response)) {
       return response.map((item) => ({
-        url: {raw: item.urls.regular, regular: item.urls.regular},
+        url: { raw: item.urls.raw, regular: item.urls.regular },
         download: item.links.download,
-        name: item.user ? item.user.name : "Unknown",
+        user: item.user,
       }));
     } else if (response.results) {
-        return response.results.map((item) => ({
-            url: {raw: item.urls.raw , regular: item.urls.regular},
-            download: item.links.download,
-            user: item.user,
-          }));
+      return response.results.map((item) => ({
+        url: { raw: item.urls.raw, regular: item.urls.regular },
+        download: item.links.download,
+        user: item.user,
+      }));
     } else {
       throw new Error("Unexpected response format");
     }
@@ -150,7 +158,7 @@ const App: React.FC = () => {
 
       const response = await fetch(requestUrl).then((res) => res.json());
       const result = formatResult(response) as {
-        url: {raw: string, regular: string};
+        url: { raw: string; regular: string };
         download: string;
         user: UserType;
       }[];
@@ -159,6 +167,7 @@ const App: React.FC = () => {
       setHaveImages(result.length > 0);
       const preloadedImages = await preloadImages(result);
       setImages(preloadedImages);
+      console.log("Preloaded Images:", preloadedImages);
       fetchUser(response);
     } catch (error) {
       console.error("Error in handleFetchImages:", error);
@@ -180,12 +189,16 @@ const App: React.FC = () => {
       const response = await fetch(requestUrl).then((res) => res.json());
       console.log("Response:", response);
       const result = formatResult(response) as {
-        url: {raw: string, regular: string};
+        url: { raw: string; regular: string };
         download: string;
         user: UserType;
       }[];
 
       console.log("Result:", result);
+
+      if (result.length === 0) {
+        setMessage("No more images found");
+      }
 
       setHaveImages(preloadImages.length > 0);
 
@@ -203,41 +216,56 @@ const App: React.FC = () => {
   };
 
   const preloadImages = (
-    imageArray: { url: {raw: string, regular: string}; download: string; user: UserType }[]
+    imageArray: {
+      url: { raw: string; regular: string };
+      download: string;
+      user: UserType;
+    }[]
   ) => {
-    return new Promise<{ url: {raw: string, regular: string}; download: string; user: UserType }[]>(
-      (resolve, reject) => {
-        const loadedImages: { url: {raw: string, regular: string}; download: string; user: UserType }[] =
-          [];
-        let loadedCount = 0;
-        if (loadedCount === imageArray.length) {
+    return new Promise<
+      {
+        url: { raw: string; regular: string };
+        download: string;
+        user: UserType;
+      }[]
+    >((resolve, reject) => {
+      const loadedImages: {
+        url: { raw: string; regular: string };
+        download: string;
+        user: UserType;
+      }[] = [];
+      let loadedCount = 0;
+      if (loadedCount === imageArray.length) {
+        resolve(loadedImages);
+      }
+
+      imageArray.forEach((imageData, index) => {
+        const img = new Image();
+        img.src = imageData.url.regular;
+
+        img.onload = () => {
+          loadedImages[index] = imageData;
+          loadedCount++;
+
+          if (loadedCount === imageArray.length) {
             resolve(loadedImages);
           }
+        };
 
-        imageArray.forEach((imageData, index) => {
-          const img = new Image();
-          img.src = imageData.url.regular;
-
-          img.onload = () => {
-            loadedImages[index] = imageData;
-            loadedCount++;
-
-            if (loadedCount === imageArray.length) {
-              resolve(loadedImages);
-            }
-          };
-
-          img.onerror = (err) => {
-            reject(`Image failed to load: ${err}`);
-          };
-        });
-      }
-    );
+        img.onerror = (err) => {
+          reject(`Image failed to load: ${err}`);
+        };
+      });
+    });
   };
 
   const handleClick = () => {
     if (prompt.trim() === "" && queryType !== "random") {
-      setError("Error! Prompt cannot be empty!");
+      if (queryType === "user") {
+        setError("Error! Username cannot be empty!");
+      } else {
+        setError("Error! Prompt cannot be empty!");
+      }
     } else if (prompt.length > 100 && queryType !== "random") {
       setError("Prompt input cannot exceed 100 characters.");
     } else {
@@ -284,11 +312,16 @@ const App: React.FC = () => {
 
       <ImageCanvas images={images} haveImages={haveImages} />
 
+      {message && (
+        <div className="text-white text-2xl font-bold mb-10">{message}</div>
+      )}
+
       {images.length > 0 && (
         <button
+          tabIndex={0}
           onClick={getMoreImages}
           disabled={loading}
-          className="w-28 rounded-2xl text-white font-bold h-12 bg-[#386FA4] active:bg-[#2b5680] disabled:opacity-50 mb-40"
+          className="w-28 rounded-2xl text-white font-bold h-12 bg-[#386FA4] active:bg-[#2b5680] disabled:opacity-50 mb-20"
         >
           More
         </button>
