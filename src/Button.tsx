@@ -71,6 +71,8 @@ const Button: React.FC<Props> = ({ onClick, loading, queryType, setQueryType }) 
             loading && "opacity-50"
           } flex h-10 items-center justify-center rounded-r-2xl active:bg-[#2b5680] right-0 bg-[#386FA4] w-2/12 border-r-2 border-y-2 border-solid border-[#133C55]`}
           onClick={toggleDropdown}
+          role="button"
+          aria-pressed={isDropdownOpen}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               toggleDropdown(
@@ -94,7 +96,7 @@ const Button: React.FC<Props> = ({ onClick, loading, queryType, setQueryType }) 
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("");
-              console.log("Search for random images");
+                console.log("Search for images initiated");
             }}
           >
             Search
@@ -104,7 +106,7 @@ const Button: React.FC<Props> = ({ onClick, loading, queryType, setQueryType }) 
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("random");
-              console.log("Search for random images");
+                console.log("Search for random images initiated");
             }}
           >
             Random Images
@@ -114,7 +116,7 @@ const Button: React.FC<Props> = ({ onClick, loading, queryType, setQueryType }) 
             onClick={() => {
               setDropdownOpen(false);
               setQueryType("user");
-              console.log("Search for users");
+                console.log("Search for users initiated");
             }}
           >
             Search Users

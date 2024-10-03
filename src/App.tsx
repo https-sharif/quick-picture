@@ -77,6 +77,7 @@ const App: React.FC = () => {
     setPrompt("");
     setUser(null);
     setMessage(null);
+    setImages([]);
   }, [queryType]);
 
   useEffect(() => {
@@ -260,13 +261,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleClick();
-    }
-  };
-
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setError(null);
     setPrompt(event.target.value);
@@ -279,7 +273,6 @@ const App: React.FC = () => {
         onInputChange={handleInputChange}
         loading={loading}
         handleClick={handleClick}
-        handleKeyPress={handleKeyPress}
         error={error}
         queryType={queryType}
         setQueryType={setQueryType}
@@ -327,15 +320,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
-// {loading ? (
-//   <div className="flex justify-center items-center space-x-1">
-//     <span className="sr-only">Loading...</span>
-//     <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-//     <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-//     <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
-//   </div>
-// ) : (
-//   buttonName
-// )}

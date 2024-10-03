@@ -7,7 +7,6 @@ type Props = {
   loading: boolean;
   handleClick: () => void;
   onInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleKeyPress: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   error: string | null;
   queryType: string;
   setQueryType: (queryType: string) => void;
@@ -18,7 +17,6 @@ const Form: React.FC<Props> = ({
   onInputChange,
   loading,
   handleClick,
-  handleKeyPress,
   error,
   queryType,
   setQueryType,
@@ -47,6 +45,13 @@ const Form: React.FC<Props> = ({
   const autoResizeTextarea = (textarea: HTMLTextAreaElement) => {
     textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight}px`;
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleClick();
+    }
   };
 
   return (
