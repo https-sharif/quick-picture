@@ -28,7 +28,7 @@ const User: React.FC<UserProps> = ({ name, username, bio, profile_image, instagr
   return (
     <div className="flex items-center justify-around min-w-full mt-16">
       <div className="flex justify-between w-3/4">
-        <img src={profile_image.large} className="object-contain w-60 mr-5 select-none" draggable="false" alt={`Profile of ${name}`} />
+        <img src={profile_image.large} className="object-contain rounded-[50%] border-black border-2 w-60 mr-5 select-none" draggable="false" alt={`Profile of ${name}`} />
         <div className="w-4/5 relative">
           <p className="text-4xl font-bold">{name}</p>
           <p className="text-gray-600 text-xl">@{username}</p>
