@@ -57,7 +57,7 @@ const Form: React.FC<Props> = ({
   return (
     <>
       <div className="mb-16">
-        <form className="flex items-center flex-col justify-center relative mt-20">
+        <form className="flex items-center flex-col justify-center relative ">
           {queryType !== "random" && (
             <div>
               <textarea

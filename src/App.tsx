@@ -267,7 +267,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center no-scrollbar">
+    <div className="flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-white mt-10 mb-10 font-ubuntu">
+        Quick Picture
+      </h1>
       <Form
         prompt={prompt}
         onInputChange={handleInputChange}
