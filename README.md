@@ -74,7 +74,7 @@ Check out the live demo of the app here: [Quick Picture](https://sharif-islam964
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/sharif-islam96403/quick-picture.git
+   git clone https://github.com/http-sharif/quick-picture.git
    ```
 2. Navigate to the project directory:
    ```bash
