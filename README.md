@@ -64,7 +64,7 @@ Notice I didn’t include the .env file? That's intentional! 😏 You’ll need 
 
 ## Demo
 
-Check out the live demo of the app here: [Quick Picture](https://sharif-islam96403.github.io/quick-picture/).
+Check out the live demo of the app here: [Quick Picture](https://http-sharif.github.io/quick-picture/).
 
 <br><div align="center">
     <img src="./src/assets/very%20confidential%20folder%20(do%20not%20open)/meme5.gif" style="border: 2px solid white;" width="400px" alt="Meme 5">
